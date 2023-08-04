@@ -1,0 +1,14 @@
+homepage:
+    path: /
+    controller: App\Controller\IndexController::index
+    methods: GET|POST
+
+edit:
+    path: /edit/{id<\d+>}
+    controller: App\Controller\IndexController::edit
+    methods: GET|POST
+
+delete:
+    path: /delete/{id<\d+>}
+    controller: App\Controller\IndexController::delete
+    methods: POST

@@ -1,1 +1,1 @@
-# symfony-6.3-app
+### A small Symfony 6.3 app

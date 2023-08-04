@@ -1,0 +1,88 @@
+{% extends "layout.html.twig" %}
+
+{% block body %}
+{% for notice in app.flashes('notice') %}
+    <p class="alert alert-success alert-dismissible text-center">
+        {{ notice }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </p>
+{% endfor %}
+{% for error in app.flashes('error') %}
+    <p class="alert alert-danger alert-dismissible text-center">
+        {{ error }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </p>
+{% endfor %}
+
+<form method="post" action="" enctype="multipart/form-data" class="row">
+    <div class="col-6 mb-5">
+        <label for="file" class="form-label">Upload data:<br><small>(File formats accepted: <b>xlsx</b>. Maximum file size: 2MB)</small></label>
+        <input type="file" name="file" id="file" class="form-control form-control-sm">
+        <br>
+        <input type="submit" value="Upload" class="btn btn-success btn-sm">
+    </div>
+</form>
+
+{% if bands is empty %}
+    <p>There are no music bands yet.</p>
+{% else %}
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Nom du groupe</th>
+            <th scope="col">Origine</th>
+            <th scope="col">Ville</th>
+            <th scope="col">Année début</th>
+            <th scope="col">Année séparation</th>
+            <th scope="col">Fondateurs</th>
+            <th scope="col">Membres</th>
+            <th scope="col">Courant musical</th>
+            <th scope="col">Présentation</th>
+            <th scope="col">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for band in bands %}
+        <tr>
+            <th scope="row">{{ band.id }}</th>
+            <td class="js-name">{{ band.name }}</td>
+            <td>{{ countries[band.id_country] }}</td>
+            <td>{{ cities[band.id_city] }}</td>
+            <td>{{ band.start_year }}</td>
+            <td>{{ band.end_year ?? '-' }}</td>
+            <td>{{ band.founder ?? '-' }}</td>
+            <td>{{ band.members }}</td>
+            <td>{{ band.genre }}</td>
+            <td>{{ band.description }}</td>
+            <td>
+                <a href="{{ path('edit', {id: band.id}) }}" class="btn btn-primary btn-sm mb-1">Edit</a>
+                <form action="{{ url('delete', { id: band.id }) }}" method="post">
+                    <input type="hidden" name="token" value="{{ csrf_token('delete-music-band') }}">
+                    <button type="button" class="btn btn-danger btn-sm js-delete-btn" data-bs-toggle="modal" data-bs-target="#delete-confirmation-dialog">Delete</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<div class="modal" tabindex="-1" id="delete-confirmation-dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Delete confirmation</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete the group <b class="js-band-name"></b>?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No, cancel</button>
+                <button type="button" class="btn btn-success js-ok-btn">Yes, delete it</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
